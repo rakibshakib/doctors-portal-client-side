@@ -10,6 +10,7 @@ import Register from './components/Pages/Login/Register/Register';
 import Login from './components/Pages/Login/Login/Login';
 import PrivateRoute from './components/Pages/Login/PrivateRoute/PrivateRoute';
 import Appointment from './components/Pages/Appoinment/Appoinment'
+import Dashboard from './components/Pages/Dashboard/Dashboard/Dashboard';
 
 
 function App() {
@@ -21,6 +22,9 @@ function App() {
           <Switch>
             <PrivateRoute path="/appointment">
               <Appointment />
+            </PrivateRoute>
+            <PrivateRoute path="/dashboard">
+              <Dashboard />
             </PrivateRoute>
             <Route path="/home">
               <Home />

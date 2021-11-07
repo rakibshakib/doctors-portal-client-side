@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -21,14 +21,42 @@ const style = {
     textAlign: 'center'
 };
 
-const BookingModal = ({ modalOpen, booking, handleModalClose, date }) => {
-    const {user}  = useAuth()
+const BookingModal = ({ modalOpen, booking, handleModalClose, date, setBookingSuccess }) => {
+    const { user } = useAuth();
+    const initialBookingInfo = { patientName: user?.displayName, email: user?.email, phone: '' }
+    const [appoinmentInfo, setAppoinmentInfo] = useState(initialBookingInfo)
 
+    const handleOnBlur = e => {
+        const field = e.target.name;
+        const value = e.target.value;
+        const newInfo = { ...appoinmentInfo }
+        newInfo[field] = value;
+        setAppoinmentInfo(newInfo)
+    }
     const handleBookingSubmit = e => {
         e.preventDefault();
-        handleModalClose();
+        // collect data 
+        const appointment = {
+            ...appoinmentInfo,
+            time: booking.time,
+            name: booking.name,
+            date: date.toLocaleDateString()
+        }
+        fetch("http://localhost:5000/appoinment-data", {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(appointment)
+        }).then(res => res.json())
+            .then(data => {
+                if (data.insertedId) {
+                    setBookingSuccess(true);
+                    handleModalClose();
+                }
+            })
     }
-    
+
     return (
         <div>
             <Modal
@@ -48,33 +76,41 @@ const BookingModal = ({ modalOpen, booking, handleModalClose, date }) => {
                             Appoinment For {booking.name}
                         </Typography>
                         <form action="" onSubmit={handleBookingSubmit}>
-
-                            <TextField
-                                label="Your Name"
-                                id="outlined-size-small"
-                                defaultValue="Name"
-                                size="small"
-                                sx={{ width: '100%', my: 2 }}
-                            />
                             <TextField
                                 label="Appoinment Time"
                                 id="outlined-size-small"
+                                name='bookingTime'
                                 defaultValue={booking.time}
                                 size="small"
+                                onBlur={handleOnBlur}
                                 disabled
                                 sx={{ width: '100%', my: 2 }}
                             />
                             <TextField
+                                label="Your Name"
+                                id="outlined-size-small"
+                                name="patientName"
+                                onBlur={handleOnBlur}
+                                defaultValue={user?.displayName}
+                                size="small"
+                                sx={{ width: '100%', my: 2 }}
+                            />
+
+                            <TextField
                                 label="Your Email"
                                 id="outlined-size-small"
+                                name="email"
+                                onBlur={handleOnBlur}
                                 defaultValue={user?.email}
                                 size="small"
-                                disabled
+
                                 sx={{ width: '100%', my: 2 }}
                             />
                             <TextField
                                 label="Your Phone Number"
                                 id="outlined-size-small"
+                                name="phone"
+                                onBlur={handleOnBlur}
                                 size="small"
                                 sx={{ width: '100%', my: 2 }}
                             />
@@ -82,8 +118,10 @@ const BookingModal = ({ modalOpen, booking, handleModalClose, date }) => {
                                 label="Appoinment Date"
                                 id="outlined-size-small"
                                 size="small"
+                                name="date"
+
                                 disabled
-                                defaultValue={date}
+                                defaultValue={date.toDateString()}
                                 sx={{ width: '100%', my: 2 }}
                             />
                             <Button type='submit' sx={{ mt: 2 }} variant="contained" color="primary">Send</Button>
