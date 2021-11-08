@@ -13,7 +13,7 @@ const Appoinments = ({ dateValue }) => {
     const [appoinments, setAppoinments] = useState([])
 
     useEffect(() => {
-        const url = `http://localhost:5000/appoinmets-all-data?email=${user.email}&date=${dateValue}`
+        const url = `https://polar-thicket-34206.herokuapp.com/appoinmets-all-data?email=${user.email}&date=${dateValue.toLocaleDateString()}`
         fetch(url, {
             headers: {
                 'authorization' : `Bearer ${token}`
@@ -21,7 +21,7 @@ const Appoinments = ({ dateValue }) => {
         })
             .then(res => res.json())
             .then(data => setAppoinments(data))
-    }, [dateValue])
+    }, [dateValue, user.email, token])
     return (
         <div>
             <h2>Appoinments: {appoinments.length} </h2>
