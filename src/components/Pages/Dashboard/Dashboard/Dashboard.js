@@ -25,11 +25,14 @@ import {
 import { Button } from '@mui/material';
 import MakeAdmin from '../MakeAdmin/MakeAdmin';
 import AddDoctor from '../AddDoctor/AddDoctor';
+import useAuth from '../../../../hooks/useAuth';
+import AdminRoute from '../../Login/AdminRoute/AdminRoute';
 
 
 const drawerWidth = 200;
 
 function Dashboard(props) {
+    const { admin } = useAuth()
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [dateValue, setDateValue] = React.useState(new Date());
@@ -46,8 +49,12 @@ function Dashboard(props) {
             <Divider />
             <Link to='/appointment'><Button>Appoinment</Button></Link>
             <Link to={`${url}`}><Button>Dashboard</Button></Link>
-            <Link to={`${url}/makeAdmin`}><Button>Make Admin</Button></Link>
-            <Link to={`${url}/addDoctor`}><Button>Add Doctor</Button></Link>
+            {
+                admin && <Box>
+                    <Link to={`${url}/makeAdmin`}><Button>Make Admin</Button></Link>
+                    <Link to={`${url}/addDoctor`}><Button>Add Doctor</Button></Link>
+                </Box>
+            }
             <List>
                 {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                     <ListItem button key={text}>
@@ -134,12 +141,12 @@ function Dashboard(props) {
                                 setDateValue={setDateValue}
                             />
                         </Route>
-                        <Route path={`${path}/makeAdmin`}>
+                        <AdminRoute path={`${path}/makeAdmin`}>
                             <MakeAdmin />
-                        </Route>
-                        <Route path={`${path}/addDoctor`}>
+                        </AdminRoute>
+                        <AdminRoute path={`${path}/addDoctor`}>
                             <AddDoctor />
-                        </Route>
+                        </AdminRoute>
                     </Switch>
 
                 </Box>

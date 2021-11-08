@@ -1,6 +1,6 @@
 import initializeFirebase from "../components/Pages/Login/Firebase/firebase.init";
 import { useState, useEffect } from 'react';
-import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, updateProfile, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, getIdToken, createUserWithEmailAndPassword, GoogleAuthProvider, updateProfile, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 
 
 // initialize firebase app
@@ -10,6 +10,8 @@ const useFirebase = () => {
     const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [authError, setAuthError] = useState('');
+    const [token, setToken] = useState('')
+    const [admin, setAdmin] = useState(false)
     const auth = getAuth();
     const googleProvider = new GoogleAuthProvider();
 
@@ -76,6 +78,10 @@ const useFirebase = () => {
         const unsubscribed = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUser(user);
+                getIdToken(user)
+                .then(idToken => {
+                    setToken(idToken)
+                })
             } else {
                 setUser({})
             }
@@ -103,13 +109,23 @@ const useFirebase = () => {
             body: JSON.stringify(user)
         }).then()
     }
+
+    useEffect(() => {
+        const url = `http://localhost:5000/users-data/${user.email}`
+        fetch(url)
+            .then(res=> res.json())
+            .then(data => setAdmin(data.admin))
+    }, [user.email])
+
     return {
         user,
+        admin, 
         isLoading,
         authError,
         registerUser,
         loginUser,
         logout,
+        token,
         loginWithGoogle
     }
 }
