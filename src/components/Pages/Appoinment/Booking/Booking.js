@@ -18,6 +18,9 @@ const Booking = ({ booking, date, setBookingSuccess }) => {
                 <Typography variant="h6" component="h6">
                     {booking.time}
                 </Typography>
+                <Typography variant="body2" sx={{my: 1, fontWeight: '600'}} display='block'>
+                    Price: ${booking?.price} 
+                </Typography>
                 <Typography variant="caption" display='block'>
                     {booking.space} Space Available
                 </Typography>

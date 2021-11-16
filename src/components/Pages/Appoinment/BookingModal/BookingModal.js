@@ -40,6 +40,7 @@ const BookingModal = ({ modalOpen, booking, handleModalClose, date, setBookingSu
             ...appoinmentInfo,
             time: booking.time,
             name: booking.name,
+            price: booking.price,
             date: date.toLocaleDateString()
         }
         fetch("https://polar-thicket-34206.herokuapp.com/appoinment-data", {

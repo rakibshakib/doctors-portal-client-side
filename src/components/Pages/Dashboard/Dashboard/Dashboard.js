@@ -6,12 +6,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -27,6 +24,8 @@ import MakeAdmin from '../MakeAdmin/MakeAdmin';
 import AddDoctor from '../AddDoctor/AddDoctor';
 import useAuth from '../../../../hooks/useAuth';
 import AdminRoute from '../../Login/AdminRoute/AdminRoute';
+import TestDashBoard from '../TestDashBoard/TestDashBoard';
+import Payment from '../Payment/Payment';
 
 
 const drawerWidth = 200;
@@ -49,6 +48,7 @@ function Dashboard(props) {
             <Divider />
             <Link to='/appointment'><Button>Appoinment</Button></Link>
             <Link to={`${url}`}><Button>Dashboard</Button></Link>
+           
             {
                 admin && <Box>
                     <Link to={`${url}/makeAdmin`}><Button>Make Admin</Button></Link>
@@ -56,14 +56,13 @@ function Dashboard(props) {
                 </Box>
             }
             <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem button key={text}>
-                        <ListItemIcon>
-                            {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                        </ListItemIcon>
-                        <ListItemText primary={text} />
+               
+                    <ListItem button >
+                        <ListItemText>
+                        <Link to={`${url}/test`}><Button>Test</Button></Link>
+                        </ListItemText>
                     </ListItem>
-                ))}
+             
             </List>
         </div>
     );
@@ -140,6 +139,12 @@ function Dashboard(props) {
                                 dateValue={dateValue}
                                 setDateValue={setDateValue}
                             />
+                        </Route>
+                        <Route path={`${path}/payment/:appoinmentID`}>
+                            <Payment />
+                        </Route>
+                        <Route path={`${path}/test`}>
+                            <TestDashBoard />
                         </Route>
                         <AdminRoute path={`${path}/makeAdmin`}>
                             <MakeAdmin />
